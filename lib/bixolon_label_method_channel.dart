@@ -41,6 +41,20 @@ class MethodChannelBixolonLabel extends BixolonLabelPlatform {
 
   @override
   Future<bool?> connectUsb() async {
-    final result = await methodChannel.invokeMethod<bool>('connectUsb');
+    try {
+      final result = await methodChannel.invokeMethod<bool>('connectUsb');
+      return result;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> requestUsbPermissionDialog() async {
+    try {
+      await methodChannel.invokeMethod<void>("requestUsbPermission");
+    } catch (e) {
+      rethrow;
+    }
   }
 }

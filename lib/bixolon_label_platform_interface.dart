@@ -61,4 +61,9 @@ abstract class BixolonLabelPlatform extends PlatformInterface {
   Future<bool?> connectUsb() {
     throw UnimplementedError('connectUsb() has not been implemented');
   }
+
+  /// request usb permission dialog
+  Future<void> requestUsbPermissionDialog() {
+    throw UnimplementedError('requestUsbPermissionDialog() has not been implemented');
+  }
 }

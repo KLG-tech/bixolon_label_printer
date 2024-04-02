@@ -40,8 +40,8 @@ android {
     dependencies {
         testImplementation 'junit:junit:4.13.2'
         testImplementation 'org.mockito:mockito-core:5.0.0'
- 	    implementation files('src/main/libs/libcommon_V1.1.9.jar')
-        implementation files('src/main/libs/BixolonLabelPrinterLibrary_V2.0.4.jar')
+ 	    implementation files('src/main/libs/libcommon_V1.2.6.jar')
+        implementation files('src/main/libs/BixolonLabelPrinterLibrary_V2.2.5.jar')
         implementation files('src/main/libs/Bixolon_pdf.jar')
     }
 

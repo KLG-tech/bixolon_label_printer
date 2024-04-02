@@ -51,4 +51,12 @@ class BixolonLabel {
        rethrow;
      }
   }
+
+  Future<void> requestUsbPermissionDialog() async {
+     try {
+       await BixolonLabelPlatform.instance.requestUsbPermissionDialog();
+     } catch (e) {
+       rethrow;
+     }
+  }
 }

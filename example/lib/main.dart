@@ -36,10 +36,12 @@ class _MyAppState extends State<MyApp> {
               shrinkWrap: true,
               children: [
                 ListTile(title: const Text("connect IP"), onTap: _onConnectIp),
+                ListTile(title: const Text("connect usb"), onTap: _onConnectUsb),
                 ListTile(title: const Text("disconnect"), onTap: _onDisconnect),
                 ListTile(title: const Text("is connected"), onTap: _onIsConnected),
                 ListTile(title: const Text("print Text"), onTap: _onPrintText),
                 ListTile(title: const Text("print Image"), onTap: _onPrintImage),
+                ListTile(title: const Text("request usb permission"), onTap: _onRequestUsbPermission),
               ],
             ))
           ],
@@ -55,6 +57,17 @@ class _MyAppState extends State<MyApp> {
       _status = "is success connected to ${param['ipAddress']}? $result";
     } catch (e) {
       _status = "failed to connect to ${param['ipAddress']}";
+    } finally {
+      setState(() {});
+    }
+  }
+
+  void _onConnectUsb() async {
+    try {
+      final result = await _bixolonLabelPlugin.connectUsb();
+      _status = "is success connected to? $result";
+    } catch (e) {
+      _status = "failed to connect to";
     } finally {
       setState(() {});
     }
@@ -108,6 +121,16 @@ class _MyAppState extends State<MyApp> {
     try {
       final result = await _bixolonLabelPlugin.printImage(param);
       _status = "$result";
+    } catch (e) {
+      _status = "$e";
+    } finally {
+      setState(() {});
+    }
+  }
+
+  void _onRequestUsbPermission() async {
+    try {
+      await _bixolonLabelPlugin.requestUsbPermissionDialog();
     } catch (e) {
       _status = "$e";
     } finally {

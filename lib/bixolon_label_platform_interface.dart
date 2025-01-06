@@ -68,7 +68,7 @@ abstract class BixolonLabelPlatform extends PlatformInterface {
   }
 
   /// connect with usb name
-  Future<void> connectToUsbName(Map<String, dynamic> param) {
+  Future<bool?> connectToUsbName(Map<String, dynamic> param) {
     throw UnimplementedError('connectToUsbName(param) has not been implemented');
   }
 }

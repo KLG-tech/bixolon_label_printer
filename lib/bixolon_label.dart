@@ -59,4 +59,13 @@ class BixolonLabel {
        rethrow;
      }
   }
+
+   Future<bool?> connectToUsbName(Map<String, dynamic> param) {
+     try {
+       return BixolonLabelPlatform.instance.connectToUsbName(param);
+     } catch (e) {
+       rethrow;
+     }
+   }
+
 }

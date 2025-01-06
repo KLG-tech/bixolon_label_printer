@@ -140,7 +140,7 @@ public class BixolonLabelPlugin implements FlutterPlugin, MethodCallHandler {
                     final Set<UsbDevice> usbDevice = BXLUsbDevice.getUsbPrinters();
                     if (usbDevice.size() > 0) {
                         final UsbDevice device;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                             device = usbDevice.stream().filter(value -> value.getVendorId() == vendorId).findFirst().orElse(null);
                             if (device != null && !usbManager.hasPermission(device)) {
                                 usbManager.requestPermission(device, mPermissionIntent);
@@ -156,6 +156,13 @@ public class BixolonLabelPlugin implements FlutterPlugin, MethodCallHandler {
                 try {
                     final String printerName = call.argument("deviceName");
                     final Set<UsbDevice> usbDevice = BXLUsbDevice.getUsbPrinters();
+                    for (UsbDevice usb: usbDevice) {
+                        Log.d("PRINT =>", "onMethodCall: :" + usb.getDeviceName());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            Log.d("PRINT =>", "onMethodCall: :" + usb.getProductName());
+                        }
+                        Log.d("PRINT =>", "onMethodCall: :" + usb.getSerialNumber());
+                    }
                     if (usbDevice.size() > 0) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                             final UsbDevice stickerPrinter = usbDevice.stream().filter(e-> e.getDeviceName().contains(printerName)).findFirst().get();

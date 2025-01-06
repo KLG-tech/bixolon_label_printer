@@ -57,4 +57,14 @@ class MethodChannelBixolonLabel extends BixolonLabelPlatform {
       rethrow;
     }
   }
+
+  @override
+  Future<bool?> connectToUsbName(Map<String, dynamic> param) async {
+    try {
+      final result = await methodChannel.invokeMethod<bool>('connectToUsbName', param);
+      return result;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

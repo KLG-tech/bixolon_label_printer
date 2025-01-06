@@ -151,6 +151,26 @@ public class BixolonLabelPlugin implements FlutterPlugin, MethodCallHandler {
                 } catch (Exception e) {
                     result.success("failed" + e.getMessage());
                 }
+                break;
+            case "connectToUsbName":
+                try {
+                    final String printerName = call.argument("deviceName");
+                    final Set<UsbDevice> usbDevice = BXLUsbDevice.getUsbPrinters();
+                    if (usbDevice.size() > 0) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            final UsbDevice stickerPrinter = usbDevice.stream().filter(e-> e.getDeviceName().contains(printerName)).findFirst().get();
+                            final String deviceName = stickerPrinter.getDeviceName();
+                            if (!usbManager.hasPermission(stickerPrinter)) {
+                                usbManager.requestPermission(stickerPrinter, mPermissionIntent);
+                            }
+                            this.mBixolonLabelPrinter.connect(stickerPrinter, deviceName);
+                        }
+                        result.success(this.mBixolonLabelPrinter.isConnected());
+                    }
+                } catch (Exception e) {
+                    result.success(false);
+                }
+                break;
             default:
                 result.notImplemented();
                 break;

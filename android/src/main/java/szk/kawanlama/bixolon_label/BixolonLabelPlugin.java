@@ -27,6 +27,7 @@ import com.bixolon.commonlib.log.LogService;
 import com.bixolon.labelprinter.BixolonLabelPrinter;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * BixolonLabelPlugin
@@ -120,9 +121,12 @@ public class BixolonLabelPlugin implements FlutterPlugin, MethodCallHandler {
             case "connectUsb":
                 try {
                     final Set<UsbDevice> usbDevice = BXLUsbDevice.getUsbPrinters();
+                    for (UsbDevice device : usbDevice) {
+                        Log.i("Connect USB", device.getDeviceName() + device.getProductName() + device.getSerialNumber());
+                    }
                     if (usbDevice.size() > 0) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            final UsbDevice stickerPrinter = usbDevice.stream().findFirst().get();
+                            final UsbDevice stickerPrinter = usbDevice.stream().filter(e -> e.getVendorId() == vendorId).findFirst().get();
                             final String deviceName = stickerPrinter.getDeviceName();
                             if (!usbManager.hasPermission(stickerPrinter)) {
                                 usbManager.requestPermission(stickerPrinter, mPermissionIntent);
@@ -155,25 +159,28 @@ public class BixolonLabelPlugin implements FlutterPlugin, MethodCallHandler {
             case "connectToUsbName":
                 try {
                     final String printerName = call.argument("deviceName");
-                    final Set<UsbDevice> usbDevice = BXLUsbDevice.getUsbPrinters();
-                    for (UsbDevice usb: usbDevice) {
-                        Log.d("PRINT =>", "onMethodCall: :" + usb.getDeviceName());
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            Log.d("PRINT =>", "onMethodCall: :" + usb.getProductName());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        final Set<UsbDevice> usbDevice = BXLUsbDevice.getUsbPrinters().stream().filter(e -> e.getVendorId() == vendorId).collect(Collectors.toSet());
+                        for (UsbDevice device : usbDevice) {
+                            Log.i("Connect To USB Name", device.getDeviceName() + device.getProductName() + device.getSerialNumber());
                         }
-                        Log.d("PRINT =>", "onMethodCall: :" + usb.getSerialNumber());
-                    }
-                    if (usbDevice.size() > 0) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            final UsbDevice stickerPrinter = usbDevice.stream().filter(e-> e.getDeviceName().contains(printerName)).findFirst().get();
+                        if (printerName.isEmpty()) {
+                            final UsbDevice stickerPrinter = usbDevice.stream().findFirst().get();
+                            final String deviceName = stickerPrinter.getDeviceName();
+                            if (!usbManager.hasPermission(stickerPrinter)) {
+                                usbManager.requestPermission(stickerPrinter, mPermissionIntent);
+                            }
+                            this.mBixolonLabelPrinter.connect(stickerPrinter, deviceName);
+                        } else {
+                            final UsbDevice stickerPrinter = usbDevice.stream().filter(e -> e.getDeviceName().contains(printerName)).findFirst().get();
                             final String deviceName = stickerPrinter.getDeviceName();
                             if (!usbManager.hasPermission(stickerPrinter)) {
                                 usbManager.requestPermission(stickerPrinter, mPermissionIntent);
                             }
                             this.mBixolonLabelPrinter.connect(stickerPrinter, deviceName);
                         }
-                        result.success(this.mBixolonLabelPrinter.isConnected());
                     }
+                    result.success(this.mBixolonLabelPrinter.isConnected());
                 } catch (Exception e) {
                     result.success(false);
                 }
